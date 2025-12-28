@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -9,7 +10,7 @@ export interface Creation {
   id: string;
   name: string;
   html: string;
-  originalImage?: string; // Base64 data URL
+  originalImage?: string; 
   timestamp: Date;
 }
 
@@ -23,44 +24,46 @@ export const CreationHistory: React.FC<CreationHistoryProps> = ({ history, onSel
 
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
-      <div className="flex items-center space-x-3 mb-3 px-2">
-        <ClockIcon className="w-4 h-4 text-zinc-500" />
-        <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Archive</h2>
-        <div className="h-px flex-1 bg-zinc-800"></div>
+      <div className="flex items-center space-x-4 mb-4 px-2">
+        <ClockIcon className="w-5 h-5 text-blue-500" />
+        <h2 className="text-sm font-black uppercase tracking-[0.3em] text-blue-500">Log_Archive</h2>
+        <div className="h-[2px] flex-1 bg-blue-900/40"></div>
       </div>
       
-      {/* Horizontal Scroll Container for Compact Layout */}
-      <div className="flex overflow-x-auto space-x-4 pb-2 px-2 scrollbar-hide">
+      <div className="flex overflow-x-auto space-x-6 pb-4 px-2 scrollbar-hide">
         {history.map((item) => {
           const isPdf = item.originalImage?.startsWith('data:application/pdf');
           return (
             <button
               key={item.id}
               onClick={() => onSelect(item)}
-              className="group flex-shrink-0 relative flex flex-col text-left w-44 h-28 bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-lg transition-all duration-200 overflow-hidden"
+              className="group flex-shrink-0 relative flex flex-col text-left w-52 h-32 bg-zinc-950 border-2 border-blue-900/50 hover:border-blue-500 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)] transition-all duration-300 overflow-hidden"
             >
-              <div className="p-4 flex flex-col h-full">
+              {/* Technical Scanline effect on card hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-10 pointer-events-none scanline-effect"></div>
+              
+              <div className="p-4 flex flex-col h-full relative z-10">
                 <div className="flex items-start justify-between mb-2">
-                  <div className="p-1.5 bg-zinc-800 rounded group-hover:bg-zinc-700 transition-colors border border-zinc-700/50">
+                  <div className="p-2 border border-blue-500/30 group-hover:border-blue-500 transition-colors">
                       {isPdf ? (
-                          <DocumentIcon className="w-4 h-4 text-zinc-400" />
+                          <DocumentIcon className="w-5 h-5 text-blue-400" />
                       ) : item.originalImage ? (
-                          <PhotoIcon className="w-4 h-4 text-zinc-400" />
+                          <PhotoIcon className="w-5 h-5 text-blue-400" />
                       ) : (
-                          <DocumentIcon className="w-4 h-4 text-zinc-400" />
+                          <DocumentIcon className="w-5 h-5 text-blue-400" />
                       )}
                   </div>
-                  <span className="text-[10px] font-mono text-zinc-600 group-hover:text-zinc-400">
+                  <span className="text-[10px] font-mono font-bold text-blue-900 group-hover:text-blue-500 transition-colors uppercase">
                     {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
                 
                 <div className="mt-auto">
-                  <h3 className="text-sm font-medium text-zinc-300 group-hover:text-white truncate">
+                  <h3 className="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-widest truncate">
                     {item.name}
                   </h3>
-                  <div className="flex items-center space-x-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] text-blue-400">Restore</span>
+                  <div className="flex items-center space-x-2 mt-2 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0">
+                    <span className="text-[10px] font-mono text-blue-400 font-black uppercase tracking-tighter">Initialize_Project</span>
                     <ArrowRightIcon className="w-3 h-3 text-blue-400" />
                   </div>
                 </div>

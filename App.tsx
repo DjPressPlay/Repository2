@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -16,7 +17,6 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<Creation[]>([]);
   const importInputRef = useRef<HTMLInputElement>(null);
 
-  // Load history from local storage or fetch examples on mount
   useEffect(() => {
     const initHistory = async () => {
       const saved = localStorage.getItem('gemini_app_history');
@@ -37,7 +37,6 @@ const App: React.FC = () => {
       if (loadedHistory.length > 0) {
         setHistory(loadedHistory);
       } else {
-        // If no history (new user or cleared), load examples
         try {
            const exampleUrls = [
                'https://storage.googleapis.com/sideprojects-asronline/bringanythingtolife/vibecode-blog.json',
@@ -67,7 +66,6 @@ const App: React.FC = () => {
     initHistory();
   }, []);
 
-  // Save history when it changes
   useEffect(() => {
     if (history.length > 0) {
         try {
@@ -78,14 +76,12 @@ const App: React.FC = () => {
     }
   }, [history]);
 
-  // Helper to convert file to base64
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         if (typeof reader.result === 'string') {
-          // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
           const base64 = reader.result.split(',')[1];
           resolve(base64);
         } else {
@@ -98,7 +94,6 @@ const App: React.FC = () => {
 
   const handleGenerate = async (promptText: string, file?: File) => {
     setIsGenerating(true);
-    // Clear active creation to show loading state
     setActiveCreation(null);
 
     try {
@@ -117,7 +112,6 @@ const App: React.FC = () => {
           id: crypto.randomUUID(),
           name: file ? file.name : 'New Creation',
           html: html,
-          // Store the full data URL for easy display
           originalImage: imageBase64 && mimeType ? `data:${mimeType};base64,${imageBase64}` : undefined,
           timestamp: new Date(),
         };
@@ -156,7 +150,6 @@ const App: React.FC = () => {
             const json = event.target?.result as string;
             const parsed = JSON.parse(json);
             
-            // Basic validation
             if (parsed.html && parsed.name) {
                 const importedCreation: Creation = {
                     ...parsed,
@@ -164,13 +157,11 @@ const App: React.FC = () => {
                     id: parsed.id || crypto.randomUUID()
                 };
                 
-                // Add to history if not already there (by ID check)
                 setHistory(prev => {
                     const exists = prev.some(c => c.id === importedCreation.id);
                     return exists ? prev : [importedCreation, ...prev];
                 });
 
-                // Set as active immediately
                 setActiveCreation(importedCreation);
             } else {
                 alert("Invalid creation file format.");
@@ -179,7 +170,6 @@ const App: React.FC = () => {
             console.error("Import error", err);
             alert("Failed to import creation.");
         }
-        // Reset input
         if (importInputRef.current) importInputRef.current.value = '';
     };
     reader.readAsText(file);
@@ -189,35 +179,29 @@ const App: React.FC = () => {
 
   return (
     <div className="h-[100dvh] bg-zinc-950 bg-dot-grid text-zinc-50 selection:bg-blue-500/30 overflow-y-auto overflow-x-hidden relative flex flex-col">
+      <div className="fixed inset-0 pointer-events-none opacity-20 scanline-effect z-50"></div>
       
-      {/* Centered Content Container */}
       <div 
         className={`
           min-h-full flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10 
           transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1)
           ${isFocused 
-            ? 'opacity-0 scale-95 blur-sm pointer-events-none h-[100dvh] overflow-hidden' 
+            ? 'opacity-0 scale-95 blur-md pointer-events-none h-[100dvh] overflow-hidden' 
             : 'opacity-100 scale-100 blur-0'
           }
         `}
       >
-        {/* Main Vertical Centering Wrapper */}
         <div className="flex-1 flex flex-col justify-center items-center w-full py-12 md:py-20">
-          
-          {/* 1. Hero Section */}
-          <div className="w-full mb-8 md:mb-16">
+          <div className="w-full mb-12 md:mb-20">
               <Hero />
           </div>
 
-          {/* 2. Input Section */}
           <div className="w-full flex justify-center mb-8">
               <InputArea onGenerate={handleGenerate} isGenerating={isGenerating} disabled={isFocused} />
           </div>
-
         </div>
         
-        {/* 3. History Section & Footer - Stays at bottom */}
-        <div className="flex-shrink-0 pb-6 w-full mt-auto flex flex-col items-center gap-6">
+        <div className="flex-shrink-0 pb-10 w-full mt-auto flex flex-col items-center gap-10">
             <div className="w-full px-2 md:px-0">
                 <CreationHistory history={history} onSelect={handleSelectCreation} />
             </div>
@@ -226,14 +210,13 @@ const App: React.FC = () => {
               href="https://x.com/ammaar" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-zinc-600 hover:text-zinc-400 text-xs font-mono transition-colors pb-2"
+              className="text-blue-900 hover:text-blue-500 text-[10px] font-mono font-black transition-colors pb-2 uppercase tracking-[0.5em]"
             >
-              Created by @ammaar
+              System_Operator: @ammaar
             </a>
         </div>
       </div>
 
-      {/* Live Preview - Always mounted for smooth transition */}
       <LivePreview
         creation={activeCreation}
         isLoading={isGenerating}
@@ -241,14 +224,13 @@ const App: React.FC = () => {
         onReset={handleReset}
       />
 
-      {/* Subtle Import Button (Bottom Right) */}
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-6 right-6 z-50">
         <button 
             onClick={handleImportClick}
-            className="flex items-center space-x-2 p-2 text-zinc-500 hover:text-zinc-300 transition-colors opacity-60 hover:opacity-100"
+            className="flex items-center space-x-2 p-3 bg-zinc-950 border-2 border-blue-600 text-blue-500 hover:bg-blue-600 hover:text-white transition-all shadow-[0_0_20px_rgba(37,99,235,0.2)]"
             title="Import Artifact"
         >
-            <span className="text-xs font-medium uppercase tracking-wider hidden sm:inline">Upload previous artifact</span>
+            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Upload_Artifact</span>
             <ArrowUpTrayIcon className="w-5 h-5" />
         </button>
         <input 

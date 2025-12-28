@@ -1,0 +1,48 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-50;
+  }
+}
+
+@layer components {
+  .blueprint-outline {
+    @apply border-2 border-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.2)];
+  }
+  
+  .blueprint-outline-thick {
+    @apply border-[3px] border-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)];
+  }
+
+  .blueprint-card {
+    @apply bg-zinc-900/80 backdrop-blur-md border-2 border-blue-600/50 hover:border-blue-500 transition-all duration-300;
+  }
+}
+
+/* Technical scanning effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.scanline-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #3b82f6, transparent);
+  opacity: 0.5;
+  animation: scanline 3s linear infinite;
+  pointer-events: none;
+}
